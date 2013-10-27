@@ -1035,11 +1035,15 @@ class Posts extends ArrayObject implements IsContent
 			if ( !array_key_exists( 'orderby', $params ) ) {
 				$params['orderby'] = 'pubdate ASC';
 			}
+
+			$params = array_merge( $defaultparams, $userparams );
+			$params = Plugins::filter( 'ascend_filters', $params, $post);
+			
 			$posts = Posts::get( $params );
 		}
 		if($posts) {
 			// find $post and return the next one.
-			$index = $posts->search( $post );
+			$index = $posts->search_id( $post );
 			$target = $index + 1;
 			if ( array_key_exists( $target, $posts ) ) {
 				$ascend = $posts[$target];
@@ -1071,11 +1075,15 @@ class Posts extends ArrayObject implements IsContent
 			if ( !array_key_exists( 'orderby', $params ) ) {
 				$params['orderby'] = 'pubdate DESC';
 			}
+
+			$params = array_merge( $defaultparams, $userparams );
+			$params = Plugins::filter( 'descend_filters', $params, $post);
+			
 			$posts = Posts::get( $params );
 		}
 		if($posts) {
 			// find $post and return the next one.
-			$index = $posts->search( $post );
+			$index = $posts->search_id( $post );
 			$target = $index + 1;
 			if ( array_key_exists( $target, $posts ) ) {
 				$descend = $posts[$target];
@@ -1094,6 +1102,15 @@ class Posts extends ArrayObject implements IsContent
 	public function search( $needle )
 	{
 		return array_search( $needle, $this->getArrayCopy() );
+	}
+	
+	public function search_id( $needle )
+	{
+		foreach($this->getArrayCopy() as $index => $post) {
+			if($post->id == $needle->id) {
+				return $index;
+			}
+		}
 	}
 
 	/**
