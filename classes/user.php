@@ -581,7 +581,8 @@ class User extends QueryRecord implements FormStorage, IsContent
 		}
 		return $this->group_list;
 	}
-
+	
+	
 	/**
 	 * function in_group
 	 * Whether or not this user is is in the specified group
@@ -648,6 +649,12 @@ class User extends QueryRecord implements FormStorage, IsContent
 				break;
 			case 'groups':
 				$out = $this->list_groups();
+				break;
+			case 'primary_group':
+				$this->list_groups(true);
+				foreach($this->group_list as $g) {
+					if($g > 3) { $group = UserGroup::get($g); $out = $group->name; }
+				}
 				break;
 			case 'displayname':
 				$out = ( empty( $this->info->displayname ) ) ? $this->username : $this->info->displayname;
