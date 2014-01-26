@@ -5,6 +5,7 @@
 				'class', 'id' => 'name'
 			)
 		); ?>>
+<span><?php echo $control->caption; ?></span>
 <?php foreach( $control->options as $key => $text ) : ?>
 	<input type="radio" <?php
 		echo $control->parameter_map(

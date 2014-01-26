@@ -1095,6 +1095,7 @@ class FormControl extends FormComponents
 	public $template = null;
 	public $raw = false;
 	public $errors = array();
+	public $user_id = null;
 
 	/**
 	 * FormControl constructor - set initial settings of the control
@@ -1180,7 +1181,11 @@ class FormControl extends FormComponents
 
 			switch ( $type ) {
 				case 'user':
-					$this->default = User::identify()->info->{$location};
+					if(isset($this->user_id)) {
+						$this->default = User::get($this->user_id)->info->{$location};
+					}
+					else
+						$this->default = User::identify()->info->{$location};
 					break;
 				case 'option':
 					$this->default = Options::get( $location );
@@ -1244,7 +1249,10 @@ class FormControl extends FormComponents
 
 		switch ( $type ) {
 			case 'user':
-				$user = User::identify();
+				if(isset($this->user_id))
+					$user = User::get($this->user_id);
+				else
+					$user = User::identify();
 				$user->info->{$location} = $this->value;
 				$user->info->commit();
 				break;
