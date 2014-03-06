@@ -15,8 +15,8 @@
 class Media
 {
 	static $silos = null;
-	const THUMBNAIL_WIDTH = 200;
-	const THUMBNAIL_HEIGHT = 100;
+	const THUMBNAIL_WIDTH = 400;
+	const THUMBNAIL_HEIGHT = 400;
 
 	/**
 	 * Retrieve an array of media assets stored at a virtual path
