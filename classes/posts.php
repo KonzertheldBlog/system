@@ -1026,6 +1026,7 @@ class Posts extends ArrayObject implements IsContent
 		$ascend = false;
 		if ( !$params ) {
 			$params = array( 'where' => "pubdate >= '{$post->pubdate->sql}' AND content_type = {$post->content_type} AND status = {$post->status}", 'limit' => 2, 'orderby' => 'pubdate ASC' );
+			$params = Plugins::filter( 'ascend_filters', $params, $post);
 			$posts = Posts::get( $params );
 		}
 		elseif ( $params instanceof Posts ) {
@@ -1066,6 +1067,7 @@ class Posts extends ArrayObject implements IsContent
 		$descend = false;
 		if ( !$params ) {
 			$params = array( 'where' => "pubdate <= '{$post->pubdate->sql}' AND content_type = {$post->content_type} AND status = {$post->status}", 'limit' => 2, 'orderby' => 'pubdate DESC' );
+			$params = Plugins::filter( 'descend_filters', $params, $post);
 			$posts = Posts::get( $params );
 		}
 		elseif ( $params instanceof Posts ) {
@@ -1319,7 +1321,7 @@ class Posts extends ArrayObject implements IsContent
 	{
 		$presets['page_list'] = array( 'content_type' => 'page', 'status' => 'published', 'nolimit' => true );
 		$presets['asides'] = array( 'vocabulary' => array( 'tags:term' => 'aside' ), 'limit' => 5 );
-		$presets['home'] = array( 'content_type' => Post::type( 'entry' ), 'status' => Post::status( 'published' ), 'limit' => Options::get('pagination', 5) );
+		$presets['home'] = array( 'content_type' => array(Post::type( 'entry' ), Post::type('event')), 'status' => Post::status( 'published' ), 'limit' => Options::get('pagination', 5) );
 
 		return $presets;
 	}
