@@ -155,6 +155,9 @@ class AdminGroupsHandler extends AdminHandler
 					}
 				}
 			}
+			
+			$group->slots = $_POST['slots'];
+			$group->update();
 
 		}
 

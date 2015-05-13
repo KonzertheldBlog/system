@@ -25,7 +25,7 @@
 <div class="container settings group groupmembers" id="groupmembers">
 
 	<h2><?php _e('Group Members'); ?></h2>
-	
+	<label for="slots">Reservierte Slots</label><input type="text" name="slots" id="slots" value="<?= $group->slots ?>"/>
 	<div class="item clear" id="assignedusers">
 		<span class="pct100" id="currentusers">
 			<span class="pct20">

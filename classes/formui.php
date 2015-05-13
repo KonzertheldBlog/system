@@ -1417,6 +1417,7 @@ class FormControl extends FormComponents
 					return $this->raw ? $_POST->raw( $this->field ) : $_POST[$this->field];
 				}
 				else {
+				if($this->get_default() == 13) Utils::debug($this->get_default());
 					return $this->get_default();
 				}
 		}
