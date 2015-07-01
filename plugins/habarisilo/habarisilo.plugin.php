@@ -269,21 +269,21 @@ class HabariSilo extends Plugin implements MediaSilo
 
 		// Calculate the output size based on the original's aspect ratio
 		$y_displacement = 0;
-		if ( $src_width / $src_height > $max_width / $max_height ) {
+		// if ( $src_width / $src_height > $max_width / $max_height ) {
 			$thumb_w = $max_width;
 			$thumb_h = $src_height * $max_width / $src_width;
 
 		// thumbnail is not full height, position it down so that it will be padded on the
 		// top and bottom with black
-		$y_displacement = ( $max_height - $thumb_h ) / 2;
-		}
-		else {
-			$thumb_w = $src_width * $max_height / $src_height;
-			$thumb_h = $max_height;
-		}
+		// $y_displacement = ( $max_height - $thumb_h ) / 2;
+		// }
+		// else {
+			// $thumb_w = $src_width * $max_height / $src_height;
+			// $thumb_h = $max_height;
+		// }
 
 		// Create the output image and copy to source to it
-		$dst_img = ImageCreateTrueColor( $thumb_w, $max_height );
+		$dst_img = ImageCreateTrueColor( $thumb_w, $thumb_h );
 		imagecopyresampled( $dst_img, $src_img, 0, $y_displacement, 0, 0, $thumb_w, $thumb_h, $src_width, $src_height );
 
 		/* Sharpen before save?
