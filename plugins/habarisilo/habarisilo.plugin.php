@@ -167,7 +167,7 @@ class HabariSilo extends Plugin implements MediaSilo
 		$realfile = $this->root . '/' . $path;
 
 		$thumbnail_suffix = HabariSilo::DERIV_DIR . '/' . $file . '.thumbnail.jpg';
-		$thumbnail_url = $this->url . '/' . dirname( $path ) . ( dirname( $path ) == '' ? '' : '/' ) . $thumbnail_suffix;
+		$thumbnail_url = $this->url . '/' . ( dirname( $path ) == '.' ? '' : dirname( $path ) ) . ( $path == '' || dirname( $path ) == '.' ? '' : '/' ) . $thumbnail_suffix;
 		$mimetype = preg_replace(' %[^a-z_0-9]%', '_', Utils::mimetype( $realfile ) );
 		$mtime = '';
 
@@ -204,7 +204,7 @@ class HabariSilo extends Plugin implements MediaSilo
 		$props = array_merge(
 			$props,
 			array(
-				'url' => $this->url . '/' . dirname( $path ) . ( $path == '' ? '' : '/' ) . $file,
+				'url' => $this->url . '/' . ( dirname( $path ) == '.' ? '' : dirname( $path ) ) . ( $path == '' || dirname( $path ) == '.' ? '' : '/' ) . $file,
 				'thumbnail_url' => $thumbnail_url . $mtime,
 				'filetype' => $mimetype,
 			)
