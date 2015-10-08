@@ -802,7 +802,7 @@ var timeline = {
 		timeline.overhang = ( timelineWidth > viewWidth ) ? timelineWidth - viewWidth : 0;
 
 		// Find the width which makes the loupe select 20 items
-		var handleWidth = timelineWidth - timeline.positionFromIndex( timeline.totalCount - 20 );
+		var handleWidth = timelineWidth - timeline.positionFromIndex( timeline.totalCount - 50 );
 
 		// Make the slider bounded by the view
 		var maxSliderValue = Math.min( viewWidth, timelineWidth ) - handleWidth;
@@ -953,7 +953,7 @@ var timeline = {
 		timeline.overhang = ( timelineWidth > viewWidth ) ? timelineWidth - viewWidth : 0;
 
 		// find the width which makes the loupe select 20 items
-		var handleWidth = timelineWidth - timeline.positionFromIndex( timeline.totalCount - 20 );
+		var handleWidth = timelineWidth - timeline.positionFromIndex( timeline.totalCount - 50 );
 		// make the slider bounded by the view
 		timeline.handle.max = Math.min( viewWidth, timelineWidth ) - handleWidth;
 

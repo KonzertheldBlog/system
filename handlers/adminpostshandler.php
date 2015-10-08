@@ -120,7 +120,7 @@ class AdminPostsHandler extends AdminHandler
 			'user_id' => 0,
 			'type' => Post::type( 'any' ),
 			'status' => Post::status( 'any' ),
-			'limit' => 20,
+			'limit' => 50,
 			'offset' => 0,
 			'search' => '',
 		);
