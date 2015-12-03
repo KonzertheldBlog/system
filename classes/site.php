@@ -292,7 +292,6 @@ class Site
 	public static function get_dir( $name, $trail = false )
 	{
 		$path = '';
-
 		switch ( strtolower( $name ) ) {
 			case 'config_file':
 				$path = Site::get_dir( 'config' ) . '/config.php';
@@ -301,38 +300,57 @@ class Site
 				if ( self::$config_path ) {
 					return self::$config_path;
 				}
-
 				self::$config_path = HABARI_PATH;
-
 				$config_dirs = preg_replace( '/^' . preg_quote( HABARI_PATH, '/' ) . '\/user\/sites\/(.*)/', '$1', Utils::glob( HABARI_PATH . '/user/sites/*', GLOB_ONLYDIR ) );
-
 				if ( empty( $config_dirs ) ) {
 					return self::$config_path;
 				}
-
+				// Collect host parts
 				$server = InputFilter::parse_url( Site::get_url( 'habari' ) );
 				$request = array();
 				if ( isset( $server['port'] ) && $server['port'] != '' && $server['port'] != '80' ) {
 					$request[] = $server['port'];
 				}
 				$request = array_merge($request, explode('.', $server['host']));
+				// Collect the subdirectory(s) the core is located in to determine the base path later
+				// Don't add them to $request, they will be added with $_SERVER['REQUEST_URI']
 				$basesegments = count($request);
-				$request = array_merge($request, explode( '/', trim( $_SERVER['REQUEST_URI'], '/' ) ) );
-				$x = 0;
+				if(!empty($server['path'])) {
+					$coresubdir = explode( '/', trim( $server['path'], '/' ) );
+					$basesegments += count($coresubdir);
+				}
+				// Preserve $request without directories for fallback
+				$request_base = $request;
+				// Add directory part
+				if(!empty(trim( $_SERVER['REQUEST_URI'], '/' ))) {
+					$subdirectories = explode( '/', trim( $_SERVER['REQUEST_URI'], '/' ) );
+					$request = array_merge($request, $subdirectories);
+				}
+				// Now cut parts until we found a matching site directory
+				$cuts = 0;
+				$dir_cuts = 0;
 				do {
 					$match = implode('.', $request);
 					if ( in_array( $match, $config_dirs ) ) {
 						self::$config_dir = $match;
 						self::$config_path = HABARI_PATH . '/user/sites/' . self::$config_dir;
-						self::$config_type = ( $basesegments > count($request) ) ? Site::CONFIG_SUBDOMAIN : Site::CONFIG_SUBDIR;
-						self::$config_urldir = implode('/', array_slice($request, $basesegments));
+						self::$config_type = ( isset($subdirectories) && array_intersect($subdirectories, $request) == $subdirectories ) ? Site::CONFIG_SUBDIR : Site::CONFIG_SUBDOMAIN;
+						self::$config_urldir = implode('/', array_slice($request, $basesegments + $cuts));
 						break;
 					}
-
-					array_pop($request);
-					$x--;
-					if ( $x < -10 ) {
-						echo $x;
+					// Cut a part from the beginning
+					array_shift($request);
+					$cuts--;
+					
+					// Do not fallback to only the directory part, instead, cut one and start over
+					if($basesegments + $cuts <= 0 && isset($subdirectories) && $dir_cuts < count($subdirectories)) {
+						$cuts = 0;
+						$dir_cuts++;
+						$request = array_merge($request_base, array_slice($subdirectories, 0, count($subdirectories) - $dir_cuts));
+					}
+					// What does the following check do?!
+					if ( $cuts < -10 ) {
+						echo $cuts;
 						var_dump($request);
 						die('too many ');
 					}
